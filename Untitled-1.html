@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devesh Panda - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #252424;
+            --purple: #8a2be2;
+            --text-main: #ffffff;
+            --text-gray: #a3a3a3;
+            --font: 'Poppins', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font);
+            cursor: none;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* CUSTOM CURSOR & GLOW */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--purple);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 99999;
+            box-shadow: 0 0 15px var(--purple), 0 0 30px var(--purple);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+        #cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(138,43,226,0.15) 0%, transparent 60%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* PRELOADER */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #e5e7eb;
+            z-index: 100000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-pill {
+            background: #000;
+            border-radius: 50px;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .loader-text {
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        .loader-bar-bg {
+            width: 100px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: #fff;
+            transition: width 0.1s linear;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+        .header-email { font-weight: 600; font-size: 14px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { 
+            color: #fff; text-decoration: none; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; 
+        }
+
+        /* SIDEBARS */
+        .social-sidebar {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+        .social-sidebar i { font-size: 20px; transition: 0.3s; color: #fff; }
+        .social-sidebar i:hover { color: var(--purple); transform: scale(1.2); }
+        
+        .resume-sidebar {
+            position: fixed;
+            right: 40px;
+            bottom: 40px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-weight: 700;
+            letter-spacing: 3px;
+            font-size: 12px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .resume-sidebar::before {
+            content: ''; width: 2px; height: 40px; background: #fff;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 100px;
+            position: relative;
+            z-index: 10;
+        }
+        .hero-left, .hero-right {
+            width: 30%;
+        }
+        .hero-right { text-align: right; }
+        
+        .hero-small {
+            font-size: 24px;
+            color: var(--text-gray);
+            font-weight: 300;
+            margin-bottom: -10px;
+        }
+        .hero-title {
+            font-size: 60px;
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+        .hero-title.outline {
+            color: transparent;
+            -webkit-text-stroke: 1px #fff;
+        }
+
+        /* 3D CENTER PLACEHOLDER with Real Image */
+        .hero-center {
+            width: 40%;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        .center-model-placeholder {
+            width: 300px;
+            height: 400px;
+            border: 1px solid rgba(138,43,226,0.4);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: transform 0.1s ease-out;
+            object-fit: cover;
+            padding: 0;
+            background: none;
+        }
+
+        /* LAYOUT FOR OTHER SECTIONS */
+        section { padding: 100px; position: relative; z-index: 10; }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+        .section-title { font-size: 40px; font-weight: 800; }
+
+        /* ABOUT */
+        .about-content {
+            display: flex;
+            gap: 50px;
+        }
+        .about-text { width: 50%; font-size: 18px; color: var(--text-gray); line-height: 1.8; }
+        .about-text h3 { color: #fff; font-size: 24px; margin-bottom: 20px; }
+        .timeline { width: 50%; }
+        .timeline-item {
+            display: flex; gap: 30px; margin-bottom: 40px;
+        }
+        .timeline-year { font-size: 30px; font-weight: 800; color: #333; width: 120px; }
+        .timeline-details h4 { font-size: 20px; margin-bottom: 5px; }
+        .timeline-details p { color: var(--purple); font-weight: 600; margin-bottom: 10px; }
+        .timeline-details span { color: var(--text-gray); font-size: 14px; }
+
+        /* WORK */
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .work-card {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 30px;
+            transition: 0.3s;
+        }
+        .work-card:hover { border-color: var(--purple); transform: translateY(-10px); }
+        .work-num { font-size: 40px; font-weight: 900; color: var(--purple); margin-bottom: 20px; }
+        .work-title { font-size: 24px; font-weight: 700; margin-bottom: 15px; }
+        .work-desc { color: var(--text-gray); font-size: 14px; margin-bottom: 20px; }
+        .tools { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tools span { font-size: 12px; background: #1a1a1a; padding: 5px 10px; border-radius: 5px; }
+
+        /* TECH STACK */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        .tech-box {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+        .tech-box:hover { background: rgba(138,43,226,0.1); border-color: var(--purple); }
+        .tech-box i { font-size: 40px; margin-bottom: 15px; color: var(--text-gray); }
+        .tech-box:hover i { color: #fff; }
+        .tech-box span { font-size: 14px; font-weight: 600; text-align: center; }
+
+        /* CONTACT */
+        .contact-hero {
+            text-align: center;
+            font-size: 80px;
+            font-weight: 900;
+            margin: 100px 0 50px;
+        }
+        .contact-grid {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #333;
+            padding-top: 50px;
+        }
+        .contact-col h4 { color: var(--text-gray); font-size: 14px; margin-bottom: 10px; }
+        .contact-col p, .contact-col a { color: #fff; font-size: 18px; text-decoration: none; display: block; margin-bottom: 10px; }
+        .contact-col a:hover { color: var(--purple); }
+
+        /* Hover states for cursor */
+        a:hover ~ #cursor, button:hover ~ #cursor {
+            transform: translate(-50%, -50%) scale(2);
+            background: transparent;
+            border: 2px solid var(--purple);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CUSTOM CURSOR -->
+    <div id="cursor"></div>
+    <div id="cursor-glow"></div>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="loader-pill">
+            <span class="loader-text" id="loader-status">LOADING</span>
+            <div class="loader-bar-bg">
+                <div class="loader-bar-fill" id="loader-fill"></div>
+            </div>
+            <span class="loader-text" id="loader-perc">0%</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">DP</div>
+        <div class="header-email">deveshpanda606@gmail.com</div>
+        <div class="header-phone no">8287707847</div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </header>
+
+    <!-- SIDEBARS -->
+    <div class="social-sidebar">
+        <!-- Exact Social Links Added -->
+        <a href="https://github.com/devesh35125" target="_blank"><i class="fa-brands fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/devesh-panda-30bbb71b7" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="https://x.com/pandadevesh1" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+        <a href="https://www.instagram.com/iamdeveshhhh_" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+    </div>
+    <!-- Resume Link -->
+    <a href="Devesh_Resume_Updated.pdf" target="_blank" class="resume-sidebar">RESUME</a>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-left">
+            <div class="hero-small">Hello! I'm</div>
+            <div class="hero-title">DEVESH<br>PANDA</div>
+        </div>
+
+        <div class="hero-center">
+            <!-- Dynamic Image Implementation using your provided image name -->
+            <img src="image_8cc83b.png" alt="Devesh Panda" class="center-model-placeholder" id="tilt-card">
+        </div>
+
+        <div class="hero-right">
+            <div class="hero-small">An</div>
+            <div class="hero-title outline">IT HEAD</div>
+            <div class="hero-title">SENIOR ICT<br>COORDINATOR</div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about">
+        <div class="section-header">
+            <div class="section-title">ABOUT ME</div>
+        </div>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>I am a Senior ICT Coordinator & AI Educator from India.</h3>
+                <p>I architect robust technological frameworks and deliver progressive pedagogical initiatives. I synthesize complex paradigms such as machine learning and digital threat mitigation into actionable curricula, driving institutional excellence and cultivating future-ready digital resilience.</p>
+                <br>
+                <p>Currently teaching Grades VIII-X, steering students to top board marks (98/100) while managing complete campus-wide School ERP and multi-lab operations.</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-details">
+                        <h4>Sr. ICT Coordinator</h4>
+                        <p>Sibbal International School</p>
+                        <span>Lead Educator for IT, AI, and Cyber Security. Managed complete ICT department, modern labs, and achieved 98/100 board scores.</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2022</div>
+                    <div class="timeline-details">
+                        <h4>Admin Head</h4>
+                        <p>M.P Model Public School</p>
+                        <span>Directed student admissions, master timetabling, and event coordination.</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2021</div>
+                    <div class="timeline-details">
+                        <h4>Head Trainer</h4>
+                        <p>Akash Industrial Training Institute</p>
+                        <span>Educated trainers on andragogy and taught foundational digital literacy & cybersecurity.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORK SECTION -->
+    <section id="work">
+        <div class="section-header">
+            <div class="section-title">My Work</div>
+        </div>
+        <div class="work-grid">
+            <div class="work-card">
+                <div class="work-num">01</div>
+                <h3 class="work-title">CBSE IT Excellence</h3>
+                <p class="work-desc">Prepared Grade VIII-X students for board exams, securing a highest score of 98/100 and consistent 90+ results.</p>
+                <div class="tools">
+                    <span>Pedagogy</span><span>Diagnostic Tests</span>
+                </div>
+            </div>
+            <div class="work-card">
+                <div class="work-num">02</div>
+                <h3 class="work-title">School ERP & SIS</h3>
+                <p class="work-desc">Managed student information systems, fee processing, and automated master timetabling.</p>
+                <div class="tools">
+                    <span>Excel</span><span>School ERP</span><span>Data Analytics</span>
+                </div>
+            </div>
+            <div class="work-card">
+                <div class="work-num">03</div>
+                <h3 class="work-title">Cloud Infrastructure</h3>
+                <p class="work-desc">Administered Google Workspace, Microsoft 365, and secured institutional data privacy.</p>
+                <div class="tools">
+                    <span>Google Admin</span><span>M365</span><span>Cyber Safety</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECH STACK -->
+    <section id="stack">
+        <div class="section-header">
+            <div class="section-title">TECH STACK</div>
+        </div>
+        <div class="tech-grid">
+            <div class="tech-box"><i class="fa-brands fa-python"></i><span>Python</span></div>
+            <div class="tech-box"><i class="fa-brands fa-js"></i><span>JavaScript</span></div>
+            <div class="tech-box"><i class="fa-brands fa-html5"></i><span>HTML5 / CSS</span></div>
+            <div class="tech-box"><i class="fa-solid fa-c"></i><span>C / C++</span></div>
+            <div class="tech-box"><i class="fa-brands fa-java"></i><span>Java</span></div>
+            <div class="tech-box"><i class="fa-solid fa-shapes"></i><span>Scratch</span></div>
+            <div class="tech-box"><i class="fa-brands fa-google"></i><span>Workspace</span></div>
+            <div class="tech-box"><i class="fa-brands fa-microsoft"></i><span>Office 365</span></div>
+            <div class="tech-box"><i class="fa-solid fa-database"></i><span>School ERP</span></div>
+            <div class="tech-box"><i class="fa-solid fa-shield-halved"></i><span>Cyber Sec</span></div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="contact-hero">DEVESH PANDA</div>
+        <div class="contact-grid">
+            <div class="contact-col">
+                <h4>Email</h4>
+                <p>deveshpanda606@gmail.com</p>
+                <br>
+                <h4>Location</h4>
+                <p>New Delhi, India</p>
+            </div>
+            <div class="contact-col">
+                <h4>Social</h4>
+                <!-- Exact Social Links Added -->
+                <a href="https://github.com/devesh35125" target="_blank">Github ↗</a>
+                <a href="https://www.linkedin.com/in/devesh-panda-30bbb71b7" target="_blank">LinkedIn ↗</a>
+                <a href="https://x.com/pandadevesh1" target="_blank">Twitter ↗</a>
+                <a href="https://www.instagram.com/iamdeveshhhh_" target="_blank">Instagram ↗</a>
+            </div>
+            <div class="contact-col" style="text-align: right;">
+                <h4>Designed and Developed by</h4>
+                <p>Devesh Panda</p>
+                <br>
+                <p style="color: var(--text-gray); font-size: 14px;">© 2026</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- JAVASCRIPT FOR PRELOADER, CURSOR, AND 3D TILT -->
+    <script>
+        // 1. Cursor & Glow Logic
+        const cursor = document.getElementById('cursor');
+        const glow = document.getElementById('cursor-glow');
+        const tiltCard = document.getElementById('tilt-card');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Move cursor
+            cursor.style.left = x + 'px';
+            cursor.style.top = y + 'px';
+            
+            glow.style.left = x + 'px';
+            glow.style.top = y + 'px';
+
+            // Move Image Placeholder exactly like a character following mouse
+            if (tiltCard) {
+                let xAxis = (window.innerWidth / 2 - x) / 25;
+                let yAxis = (window.innerHeight / 2 - y) / 25;
+                tiltCard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            }
+        });
+
+        // 2. Preloader Logic (Exact white pill to black transition)
+        window.addEventListener('load', () => {
+            let progress = 0;
+            const fill = document.getElementById('loader-fill');
+            const perc = document.getElementById('loader-perc');
+            const status = document.getElementById('loader-status');
+            const preloader = document.getElementById('preloader');
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 2;
+                if (progress > 100) progress = 100;
+                
+                fill.style.width = progress + '%';
+                perc.innerText = progress + '%';
+
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        status.innerText = "WELCOME";
+                        document.querySelector('.loader-bar-bg').style.display = 'none';
+                        perc.style.display = 'none';
+                        
+                        setTimeout(() => {
+                            preloader.style.opacity = '0';
+                            setTimeout(() => preloader.style.display = 'none', 500);
+                        }, 800);
+                    }, 300);
+                }
+            }, 50);
+        });
+    </script>
+</body>
+</html>
